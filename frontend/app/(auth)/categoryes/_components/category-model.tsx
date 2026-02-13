@@ -16,6 +16,8 @@ import { useCreateCategory } from "../_hooks/categoryHooks";
 import { ICategoryTypes } from "@/app/(types)/categoryTypes";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEffect } from "react";
+import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
 
 type TProps = {
   open: boolean;
@@ -23,7 +25,9 @@ type TProps = {
 };
 
 const CategoryModel = ({ open, setOpen }: TProps) => {
+
   const { user } = useAuth();
+  const { mutate } = useCreateCategory();
 
   const form = useForm({
     resolver: zodResolver(categoryValidationSchema),
@@ -40,8 +44,6 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
     }
   }, [user?.id, form]);
 
-  console.log(form.formState.errors);
-  const { mutate } = useCreateCategory();
 
   const handelCategorySubmit = (category: ICategoryTypes) => {
     mutate(category);
@@ -49,28 +51,33 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
 
   const handelClose = () => {
     setOpen(false);
+    form.reset()
   };
 
   return (
     <>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
-          <AlertDialogHeader>
+          <AlertDialogHeader className="flex items-center justify-between">
             <AlertDialogTitle className="text-white text-xl text-left">
               Category
             </AlertDialogTitle>
+            <Button type="reset" onClick={handelClose} className="cursor-pointer">
+              <X />
+            </Button>
           </AlertDialogHeader>
           <Form {...form}>
             <form
-              className="p-6 md:p-8"
+              className="p-2 md:p-4"
               onSubmit={form.handleSubmit(handelCategorySubmit)}>
-              <FieldGroup>
+              <FieldGroup className="space-y-1">
                 <FormField
                   name="title"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <Input placeholder="Enter Title" {...field} type="text" />
+                      <Label className="text-gray-400">Title:</Label>
+                      <input placeholder="Enter Title" className="text-white border-b p-1 text-sm focus:outline-none" autoFocus {...field} type="text" />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -79,29 +86,25 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
                   name="color"
                   control={form.control}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex  items-center justify-between">
+                      <Label className="text-gray-400">Select Color:</Label>
                       <Input
                         placeholder="Enter Color Code"
                         {...field}
                         type="color"
+                        className="p-1 w-10"
                       />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </FieldGroup>
-              <AlertDialogFooter>
+              <AlertDialogFooter className="mt-5">
                 <Button
                   type="submit"
-                  className="bg-[#0066FF] hover:bg-blue-900"
+                  className="bg-[#0066FF] hover:bg-blue-900 cursor-pointer"
                   onClick={handelClose}>
                   Create
-                </Button>
-                <Button
-                  type="button"
-                  className="bg-blue-900"
-                  onClick={handelClose}>
-                  Close
                 </Button>
               </AlertDialogFooter>
             </form>

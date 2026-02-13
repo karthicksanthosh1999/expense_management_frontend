@@ -14,7 +14,7 @@ export const useLoginHook = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["login"], exact: false });
-      navigation.push("/dashboard");
+      navigation.push("/");
       toast.success("User Login Successfully 🎉", {
         id: "login_user",
       });

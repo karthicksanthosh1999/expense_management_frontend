@@ -36,9 +36,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const userData = await api.get("/api/auth/decode");
         setUser(userData?.data?.data);
-        if (!userData.data) {
-          router.push("/login");
-        }
       } catch {
         setUser(null);
       } finally {

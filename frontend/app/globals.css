@@ -123,3 +123,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #0066FF;
+}

@@ -6,9 +6,15 @@ import RecentTransactions from "@/components/recent-transactions";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import HomeCard from "@/components/cards/home-cart";
 import { useAuth } from "./context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { user } = useAuth();
+  const navigate = useRouter()
+  if (!user) {
+    navigate.push("/login")
+  }
+
   return (
     <>
       <div className="relative">
