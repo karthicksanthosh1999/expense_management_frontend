@@ -7,13 +7,26 @@ import { ProfileDropdown } from "@/components/profile-dropdown";
 import HomeCard from "@/components/cards/home-cart";
 import { useAuth } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import TransactionModelForm from "./(auth)/transactions/_components/create-expense-model";
 
 export default function Home() {
   const { user } = useAuth();
-  const navigate = useRouter()
+  const navigate = useRouter();
+
+  const [transactionModelOpen, setTransactionModelOpen] = useState(false);
+  const [transactionType, setTransactionType] = useState<"Expense" | "Income">(
+    "Expense",
+  );
+
   if (!user) {
-    navigate.push("/login")
+    navigate.push("/login");
   }
+
+  const handleExpense = (type: "Expense" | "Income") => {
+    setTransactionModelOpen(true);
+    setTransactionType(type);
+  };
 
   return (
     <>
@@ -42,7 +55,9 @@ export default function Home() {
         </div>
 
         <section className="flex items-center justify-around">
-          <div className="group flex items-center justify-center flex-col gap-2">
+          <div
+            className="group flex items-center justify-center flex-col gap-2"
+            onClick={() => handleExpense("Expense")}>
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
               <HandCoins
                 className="group-hover:text-white  text-[#A2A2A7]"
@@ -53,7 +68,9 @@ export default function Home() {
               Expense
             </span>
           </div>
-          <div className="group flex items-center justify-center flex-col gap-2">
+          <div
+            className="group flex items-center justify-center flex-col gap-2"
+            onClick={() => handleExpense("Income")}>
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
               <CircleDollarSign
                 className="hover:text-white  text-[#A2A2A7]"
@@ -76,6 +93,11 @@ export default function Home() {
             </span>
           </div>
         </section>
+        <TransactionModelForm
+          type={transactionType}
+          open={transactionModelOpen}
+          setOpen={setTransactionModelOpen}
+        />
 
         {/* TRANSACTIONS */}
         <RecentTransactions limit={4} />
