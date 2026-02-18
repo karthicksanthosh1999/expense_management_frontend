@@ -11,3 +11,15 @@ export const transactionValidationSchema = z.object({
 export type TTransactionValidationSchemaType = z.infer<
   typeof transactionValidationSchema
 >;
+export const transactionFilterValidationSchema = z.object({
+  search: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  expenseType: z.string().optional(),
+  page: z.string().optional(),
+  limit: z.string().optional(),
+});
+
+export type TTransactionFilterValidationSchemaType = z.infer<
+  typeof transactionFilterValidationSchema
+>;

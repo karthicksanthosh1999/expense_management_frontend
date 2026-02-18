@@ -19,10 +19,6 @@ export default function Home() {
     "Expense",
   );
 
-  if (!user) {
-    navigate.push("/login");
-  }
-
   const handleExpense = (type: "Expense" | "Income") => {
     setTransactionModelOpen(true);
     setTransactionType(type);
