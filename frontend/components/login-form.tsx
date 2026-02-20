@@ -1,8 +1,10 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
-import { FieldDescription, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import {
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   TUserValidationSchemaType,
   userValidationSchema,
@@ -13,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useLoginHook } from "@/app/login/_hooks/loginHook";
 import { Form, FormField, FormItem, FormMessage } from "./ui/form";
 import { Button } from "./ui/button";
+import { Key, User } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -31,73 +34,67 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <Form {...form}>
-            <form
-              className="p-6 md:p-8"
-              onSubmit={form.handleSubmit(handelLogin)}>
-              <FieldGroup>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">Welcome back</h1>
-                  <p className="text-muted-foreground text-balance">
-                    Login to your Acme Inc account
-                  </p>
-                </div>
-                <FormField
-                  name="email"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Input
-                        placeholder="Enter Email"
-                        {...field}
+    <div className="h-full">
+      <h1 className="text-white text-3xl font-normal ">Sign In</h1>
+      <div className={cn("w-full", className)} {...props}>
+        <Form {...form}>
+          <form className="p-2" onSubmit={form.handleSubmit(handelLogin)}>
+            <FieldGroup className="space-y-5">
+              <FormField
+                name="email"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FieldLabel className="text-[#A2A2A7]">
+                      Email Address
+                    </FieldLabel>
+                    <div className="flex gap-2">
+                      <User className="text-[#A2A2A7]" size={25} />
+                      <input
+                        onChange={field.onChange}
                         type="email"
+                        inputMode="email"
+                        className="text-gray-300 border-b-2 border-b-gray-900 text-xl focus:outline-none border-0 placeholder:text-gray-500 p-1"
+                        placeholder="Enter Email Address"
                       />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="password"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Input
-                        placeholder="Enter password"
-                        {...field}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="password"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FieldLabel className="text-[#A2A2A7]">Password</FieldLabel>
+                    <div className="flex gap-2">
+                      <Key className="text-[#A2A2A7]" size={25} />
+                      <input
+                        onChange={field.onChange}
                         type="password"
+                        inputMode="text"
+                        className="text-gray-300 border-b-2 border-b-gray-900 text-xl focus:outline-none border-0 placeholder:text-gray-500 p-1"
+                        placeholder="Enter Email Password"
                       />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  className="cursor-pointer w-full"
-                  variant={"default"}
-                  type="submit">
-                  Create
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="/register">Sign up</a>
-                </FieldDescription>
-              </FieldGroup>
-            </form>
-          </Form>
-          <div className="bg-muted relative hidden md:block">
-            <img
-              src="/placeholder.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div>
-        </CardContent>
-      </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                className="cursor-pointer w-full bg-[#0066FF] hover:bg-blue-700"
+                variant={"default"}
+                type="submit">
+                Create
+              </Button>
+              <FieldDescription className="text-center">
+                Don&apos;t have an account? <a href="/register">Sign up</a>
+              </FieldDescription>
+            </FieldGroup>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }
