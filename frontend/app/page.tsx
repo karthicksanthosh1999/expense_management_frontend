@@ -6,14 +6,11 @@ import RecentTransactions from "@/components/recent-transactions";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import HomeCard from "@/components/cards/home-cart";
 import { useAuth } from "./context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import TransactionModelForm from "./(auth)/transactions/_components/create-expense-model";
+import { useState } from "react";
 
 export default function Home() {
   const { user } = useAuth();
-  const navigate = useRouter();
-
   const [transactionModelOpen, setTransactionModelOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<"Expense" | "Income">(
     "Expense",
@@ -27,7 +24,7 @@ export default function Home() {
   return (
     <>
       <div className="relative">
-        <header className="bg-[#000000] flex items-center justify-between px-5 mt-10">
+        <header className="bg-[#000000] flex items-center justify-between px-5 mt-5">
           <div className="flex items-center gap-5">
             <Avatar className="size-10">
               <AvatarImage src="https://github.com/maxleiter.png" />

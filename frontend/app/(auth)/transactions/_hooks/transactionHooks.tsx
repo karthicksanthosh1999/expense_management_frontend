@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { TTransactionValidationSchemaType } from "../schema/transactionSchema";
+import {
+  TTransactionFilterValidationSchemaType,
+  TTransactionValidationSchemaType,
+} from "../schema/transactionSchema";
 import api from "@/lib/axiosInstance";
 import { toast } from "sonner";
 
@@ -30,8 +33,9 @@ const createTransaction = async (
   const { data } = await api.post(`/api/expense/create`, formData);
   return data;
 };
+
 const filterTransaction = async (
-  formData: TTransactionValidationSchemaType,
+  formData: TTransactionFilterValidationSchemaType,
 ) => {
   const { data } = await api.post(`/api/expense/getAll`, formData);
   return data;
