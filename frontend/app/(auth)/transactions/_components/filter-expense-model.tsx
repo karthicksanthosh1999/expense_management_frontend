@@ -65,9 +65,11 @@ const FilterTransactionsModel = ({ open, setOpen, type }: TProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <Input
-                      type=""
+                      type="number"
+                      inputMode="numeric"
                       placeholder="Enter Amount"
                       value={field.value}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                     <FormMessage />
                   </FormItem>

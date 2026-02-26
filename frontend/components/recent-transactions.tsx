@@ -3,8 +3,9 @@
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item'
 import { Separator } from './ui/separator'
 import Link from 'next/link'
-import { TransactionModel } from './TransactionModel'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useFilterTransactionHook } from '@/app/(auth)/transactions/_hooks/transactionHooks'
 
 
 type TProps = {
@@ -12,9 +13,21 @@ type TProps = {
 }
 
 const RecentTransactions = ({ limit }: TProps) => {
+    const { push } = useRouter();
+    const { mutate: transactionMutation, data: transactionData } = useFilterTransactionHook();
 
-    const [open, setOpen] = useState(false)
+    const fetchTransactions = useCallback(() => {
+        transactionMutation({
+            search: "",
+            endDate: "",
+            startDate: "",
+            expenseType: ""
+        })
+    }, [])
 
+    useEffect(() => {
+        fetchTransactions()
+    }, [])
 
     const people = [
         {
@@ -72,7 +85,13 @@ const RecentTransactions = ({ limit }: TProps) => {
             amount: "10000",
             category: "Salary",
         },
-    ]
+    ];
+
+    const handleTransactionNavigation = (id: string) => {
+        if (id) {
+            push(`/transactions/${id}`)
+        }
+    };
 
     return (
         <section>
@@ -82,23 +101,22 @@ const RecentTransactions = ({ limit }: TProps) => {
             </div>
             <Separator className='bg-[#232533]' />
             <ItemGroup className="w-full h-80 overflow-y-auto">
-                {people.slice(0, limit).map((person, idx) => (
-                    <Item key={idx} variant="default" className="hover:bg-gray-900 cursor-pointer h-fit" onClick={() => setOpen(true)}>
+                {transactionData && transactionData?.slice(0, limit).map((item, idx) => (
+                    <Item key={idx} variant="default" className="hover:bg-gray-900 cursor-pointer h-fit" onClick={() => handleTransactionNavigation(item?.id)}>
                         <ItemMedia>
-                            <div className="bg-[#1E1E2D] text-white font-semibold text-xl h-10 w-10 rounded-full flex items-center justify-center" >{person.description.charAt(0)}</div>
+                            <div className="bg-[#1E1E2D] font-semibold text-xl h-10 w-10 rounded-full flex items-center justify-center" style={{ color: item?.category?.color }} >{item.description.charAt(0)}</div>
                         </ItemMedia>
                         <ItemContent className="gap-1">
-                            <ItemTitle className="text-white text-lg font-normal tracking-wider">{person.description}</ItemTitle>
-                            <ItemDescription>{person.category}</ItemDescription>
+                            <ItemTitle className="text-white text-lg font-normal tracking-wider">{item.description}</ItemTitle>
+                            <ItemDescription>{item.expensetype}</ItemDescription>
                         </ItemContent>
                         <ItemActions >
-                            <h4 className={`text-lg font-normal ${person.amount.charAt(0) === "-" ? "text-white" : "text-[#0066FF]"}`}>₹{person.amount}</h4>
+                            <h4 className={`text-lg font-normal`} style={{ color: item.amount.charAt(0) === "-" ? "red" : "green" }}>₹{item.amount}</h4>
                         </ItemActions>
                     </Item>
                 ))}
             </ItemGroup>
 
-            <TransactionModel open={open} setOpen={setOpen} expenseType='Expense' />
         </section>
     )
 }

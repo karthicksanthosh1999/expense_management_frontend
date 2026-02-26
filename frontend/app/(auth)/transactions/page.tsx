@@ -1,4 +1,3 @@
-"use client";
 import {
   Item,
   ItemActions,
@@ -104,6 +103,7 @@ const page = () => {
       category: "Salary",
     },
   ];
+
   return (
     <>
       <header className="bg-[#000000] flex items-center justify-between px-5 mt-10">
