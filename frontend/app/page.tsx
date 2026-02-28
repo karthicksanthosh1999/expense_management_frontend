@@ -12,12 +12,13 @@ import TransactionModelForm from "./(auth)/transactions/_components/create-expen
 import Link from "next/link";
 import { useGetCurrentAmountHook } from "./(auth)/transactions/_hooks/transactionHooks";
 import { rupeesConverter } from "@/lib/rupeesConverter";
+import LineLoader from "@/components/line-loader";
 
 export default function Home() {
   const { user } = useAuth();
 
   const [transactionModelOpen, setTransactionModelOpen] = useState(false);
-  const { data: currentAmountData } = useGetCurrentAmountHook()
+  const { data: currentAmountData, isLoading: currentAmountDataLoading } = useGetCurrentAmountHook()
   const [transactionType, setTransactionType] = useState<"Expense" | "Income">(
     "Expense",
   );
@@ -53,13 +54,20 @@ export default function Home() {
         {/* CURRENT BALANCE SECTION */}
         <div className="my-5 space-y-3">
           <h1 className="text-center text-xl text-gray-500">Current Balance</h1>
-          <h1 className="text-center text-3xl text-gray-300">{rupeesConverter(currentAmountData?.current_amount)}</h1>
+          {
+            currentAmountDataLoading ? (
+              <LineLoader />
+            ) : (
+              <h1 className="text-center text-3xl text-gray-300">{rupeesConverter(currentAmountData?.current_amount)}</h1>
+            )
+          }
         </div>
-
+        {/* CHART SECTION */}
         <div className="my-5">
           <HomeCard />
         </div>
         <section className="flex items-center justify-around">
+          {/* EXPENSE BUTTON */}
           <Link href="/transactions/type/expense"
             className="group flex items-center justify-center flex-col gap-2">
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
@@ -72,6 +80,7 @@ export default function Home() {
               Expense
             </span>
           </Link>
+          {/* INCOME BUTTON */}
           <Link href="/transactions/type/income"
             className="group flex items-center justify-center flex-col gap-2">
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
@@ -84,17 +93,18 @@ export default function Home() {
               Income
             </span>
           </Link>
-          <div className="group flex items-center justify-center flex-col gap-2">
-            <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
+          {/* GOAL BUTTON */}
+          <button disabled title="disable" className="group flex items-center justify-center flex-col gap-2 cursor-not-allowed">
+            <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center hover:">
               <Goal
-                className="group-hover:text-white  text-[#A2A2A7]"
+                className="group-hover:text-gray-500  text-[#A2A2A7]"
                 size={25}
               />
             </div>
-            <span className="text-sm group-hover:text-white text-[#A2A2A7]">
+            <span className="text-sm group-hover:text-gray-500 text-[#A2A2A7]">
               Goal
             </span>
-          </div>
+          </button>
         </section>
         <TransactionModelForm
           type={transactionType}

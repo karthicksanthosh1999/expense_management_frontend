@@ -1,21 +1,27 @@
 'use client';
 import { useParams } from 'next/navigation'
-import { deleteSingleTransactions, useDeleteTransactionHook, useGetSingleTransactionsHook } from '../_hooks/transactionHooks';
-import { BanknoteArrowDown, Calendar, ChartBarStacked, ChevronLeft, Mail, Trash, UserCircle } from 'lucide-react';
+import { useDeleteTransactionHook, useGetSingleTransactionsHook } from '../_hooks/transactionHooks';
+import { BanknoteArrowDown, Calendar, ChartBarStacked, ChevronLeft, Mail, Menu, UserCircle } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Separator } from '@/components/ui/separator';
 import { ISOToIndianDateFormate } from '@/lib/dateFormater';
 import Link from 'next/link';
 import DeleteModel from '@/components/delete-model';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import axios from 'axios';
 
 const page = () => {
     const params = useParams();
+    const captureRef = useRef<HTMLDivElement>(null);
     const id = params?.id as string;
 
     const [deleteModelOpen, setDeleteModelOpen] = useState<boolean>(false)
-
-
     const { data: transactionData } = useGetSingleTransactionsHook(id);
     const { mutate: deleteTransactionMutation } = useDeleteTransactionHook();
 
@@ -23,15 +29,43 @@ const page = () => {
         deleteTransactionMutation(id)
     }
 
+    const handleScreenShot = async () => {
+        try {
+            const screenShot = await axios.get(`/api/share?
+                amount=${transactionData?.amount}
+                &title=${transactionData?.description}
+                &category=${transactionData?.category?.title}
+                &user=${transactionData?.user?.fullName}
+                &email=${transactionData?.user?.email}
+                
+                `);
+            console.log(screenShot)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
-            <div className='relative'>
+            <div className='relative' ref={captureRef} style={{
+                backgroundColor: "#000000",
+                color: "#ffffff",
+            }}>
                 <header className='bg-[#000000] flex items-center justify-between px-5 mt-10'>
                     <Link href={'/'} className='bg-[#1E1E2D] text-[#ffffff] rounded-full p-2 w-fit cursor-pointer'><ChevronLeft size={20} /></Link>
                     <h1 className='text-xl font-normal tracking-wider text-white'>Transaction</h1>
-                    <div className='bg-[#1E1E2D] text-[#ffffff] rounded-full p-2 w-fit'><Trash size={20} onClick={() => setDeleteModelOpen(true)} /></div>
+                    <div className='bg-[#1E1E2D] text-[#ffffff] rounded-full p-2 w-fit cursor-pointer'>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild className=' border-none shadow-none'>
+                                <Menu size={18} />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem onClick={() => setDeleteModelOpen(true)}>Delete</DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleScreenShot}>Share</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </header>
-
 
                 <div className="flex items-center justify-center w-24 h-24 mx-auto my-8  rounded-full">
                     <DotLottieReact

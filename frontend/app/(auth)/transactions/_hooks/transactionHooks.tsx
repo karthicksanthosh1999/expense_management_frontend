@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TTransactionFilterValidationSchemaType, TTransactionValidationSchemaType } from "../schema/transactionSchema";
 import api from "@/lib/axiosInstance";
 import { toast } from "sonner";
-import { ITransactionsType } from "@/app/(types)/transactionsTypes";
+import { ITransactionsResponseType } from "@/app/(types)/transactionsTypes";
 
 export const useCreateTransactionHook = () => {
   return useMutation({
@@ -17,7 +17,7 @@ export const useCreateTransactionHook = () => {
 };
 
 export const useFilterTransactionHook = () => {
-  return useMutation<ITransactionsType[], Error, TTransactionFilterValidationSchemaType>({
+  return useMutation<ITransactionsResponseType[], Error, TTransactionFilterValidationSchemaType>({
     mutationFn: filterTransaction,
     onError: () => {
       toast.error("Something went wrong");
@@ -26,7 +26,7 @@ export const useFilterTransactionHook = () => {
 };
 
 export const useGetSingleTransactionsHook = (id: string) => {
-  return useQuery<ITransactionsType, Error>({
+  return useQuery<ITransactionsResponseType, Error>({
     queryKey: ["transaction", id],
     queryFn: () => getSingleTransactions(id!),
     enabled: !!id,
@@ -43,7 +43,7 @@ export const useGetCurrentAmountHook = () => {
 
 export const useDeleteTransactionHook = () => {
   const queryClient = useQueryClient();
-  return useMutation<ITransactionsType, Error, string>({
+  return useMutation<ITransactionsResponseType, Error, string>({
     mutationFn: deleteSingleTransactions,
     onSuccess: () => {
       toast.success("Transaction Deleted Successfully")

@@ -10,7 +10,7 @@ import {
 
 const HomeCard = () => {
   const chartData = [
-    { day: "Sunday", expense: 186, income: 80 },
+    { day: "Sunday", expense: 186, income: 303 },
     { day: "Monday", expense: 305, income: 200 },
     { day: "Thursday", expense: 237, income: 120 },
     { day: "Wednesday", expense: 73, income: 190 },

@@ -1,4 +1,4 @@
-export interface ITransactionsType {
+export interface ITransactionsResponseType {
     id: string,
     amount: string,
     description: string,

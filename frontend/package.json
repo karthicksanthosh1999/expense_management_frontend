@@ -30,6 +30,7 @@
     "@tabler/icons-react": "^3.36.1",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-table": "^8.21.3",
+    "@vercel/og": "^0.9.0",
     "axios": "^1.13.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

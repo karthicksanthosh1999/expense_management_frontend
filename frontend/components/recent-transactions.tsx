@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useFilterTransactionHook } from '@/app/(auth)/transactions/_hooks/transactionHooks'
+import LineLoader from './line-loader'
+import AppSkeleton from './AppSkliton'
 
 
 type TProps = {
@@ -14,7 +16,7 @@ type TProps = {
 
 const RecentTransactions = ({ limit }: TProps) => {
     const { push } = useRouter();
-    const { mutate: transactionMutation, data: transactionData } = useFilterTransactionHook();
+    const { mutate: transactionMutation, data: transactionData, isPending: transactionLoading } = useFilterTransactionHook();
 
     const fetchTransactions = useCallback(() => {
         transactionMutation({
@@ -28,65 +30,6 @@ const RecentTransactions = ({ limit }: TProps) => {
     useEffect(() => {
         fetchTransactions()
     }, [])
-
-    const people = [
-        {
-            description: "Apple",
-            amount: "3000",
-            category: "Purchase",
-        },
-        {
-            description: "Banana",
-            amount: "-300",
-            category: "Food",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-        {
-            description: "Banana",
-            amount: "-300",
-            category: "Food",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-        {
-            description: "Banana",
-            amount: "-300",
-            category: "Food",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-        {
-            description: "Banana",
-            amount: "-300",
-            category: "Food",
-        },
-        {
-            description: "Salary",
-            amount: "10000",
-            category: "Salary",
-        },
-    ];
-
     const handleTransactionNavigation = (id: string) => {
         if (id) {
             push(`/transactions/${id}`)
@@ -100,22 +43,32 @@ const RecentTransactions = ({ limit }: TProps) => {
                 <Link href={'/transactions'} className="text-sm font-semibold text-[#0066FF]">See All</Link>
             </div>
             <Separator className='bg-[#232533]' />
-            <ItemGroup className="w-full h-80 overflow-y-auto">
-                {transactionData && transactionData?.slice(0, limit).map((item, idx) => (
-                    <Item key={idx} variant="default" className="hover:bg-gray-900 cursor-pointer h-fit" onClick={() => handleTransactionNavigation(item?.id)}>
-                        <ItemMedia>
-                            <div className="bg-[#1E1E2D] font-semibold text-xl h-10 w-10 rounded-full flex items-center justify-center" style={{ color: item?.category?.color }} >{item.description.charAt(0)}</div>
-                        </ItemMedia>
-                        <ItemContent className="gap-1">
-                            <ItemTitle className="text-white text-lg font-normal tracking-wider">{item.description}</ItemTitle>
-                            <ItemDescription>{item.expensetype}</ItemDescription>
-                        </ItemContent>
-                        <ItemActions >
-                            <h4 className={`text-lg font-normal`} style={{ color: item.amount.charAt(0) === "-" ? "red" : "green" }}>₹{item.amount}</h4>
-                        </ItemActions>
-                    </Item>
-                ))}
-            </ItemGroup>
+            {
+                transactionLoading &&
+                <LineLoader />
+            }
+            {
+                transactionLoading ? (
+                    <AppSkeleton variant='text' rows={4} />
+                ) : (
+                    <ItemGroup className="w-full h-80 overflow-y-auto">
+                        {transactionData && transactionData?.slice(0, limit).map((item, idx) => (
+                            <Item key={idx} variant="default" className="hover:bg-gray-900 cursor-pointer h-fit" onClick={() => handleTransactionNavigation(item?.id)}>
+                                <ItemMedia>
+                                    <div className="bg-[#1E1E2D] font-semibold text-xl h-10 w-10 rounded-full flex items-center justify-center" style={{ color: item?.category?.color }} >{item.description.charAt(0)}</div>
+                                </ItemMedia>
+                                <ItemContent className="gap-1">
+                                    <ItemTitle className="text-white text-lg font-normal tracking-wider">{item.description}</ItemTitle>
+                                    <ItemDescription>{item.expensetype}</ItemDescription>
+                                </ItemContent>
+                                <ItemActions >
+                                    <h4 className={`text-lg font-normal`} style={{ color: item.amount.charAt(0) === "-" ? "red" : "green" }}>₹{item.amount}</h4>
+                                </ItemActions>
+                            </Item>
+                        ))}
+                    </ItemGroup>
+                )
+            }
 
         </section>
     )
