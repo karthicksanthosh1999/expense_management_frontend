@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TTransactionFilterValidationSchemaType, TTransactionValidationSchemaType } from "../schema/transactionSchema";
+import {
+  TTransactionFilterValidationSchemaType,
+  TTransactionValidationSchemaType,
+} from "../schema/transactionSchema";
 import api from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import { ITransactionsResponseType } from "@/app/(types)/transactionsTypes";
@@ -17,7 +20,11 @@ export const useCreateTransactionHook = () => {
 };
 
 export const useFilterTransactionHook = () => {
-  return useMutation<ITransactionsResponseType[], Error, TTransactionFilterValidationSchemaType>({
+  return useMutation<
+    ITransactionsResponseType[],
+    Error,
+    TTransactionFilterValidationSchemaType
+  >({
     mutationFn: filterTransaction,
     onError: () => {
       toast.error("Something went wrong");
@@ -37,7 +44,13 @@ export const useGetCurrentAmountHook = () => {
   return useQuery({
     queryKey: ["transaction"],
     queryFn: () => getCurrentAmount(),
+  });
+};
 
+export const useGetCurrentWeekAmountHook = () => {
+  return useQuery({
+    queryKey: [""],
+    queryFn: () => getCurrentWeekAmount(),
   });
 };
 
@@ -46,15 +59,14 @@ export const useDeleteTransactionHook = () => {
   return useMutation<ITransactionsResponseType, Error, string>({
     mutationFn: deleteSingleTransactions,
     onSuccess: () => {
-      toast.success("Transaction Deleted Successfully")
+      toast.success("Transaction Deleted Successfully");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
     onError: () => {
-      toast.success("Something Went Wrong")
-    }
-  })
-}
-
+      toast.success("Something Went Wrong");
+    },
+  });
+};
 
 const createTransaction = async (
   formData: TTransactionValidationSchemaType,
@@ -70,17 +82,22 @@ const filterTransaction = async (
   return data?.data;
 };
 
-export const getSingleTransactions = async (id: string) => {
+const getSingleTransactions = async (id: string) => {
   const { data } = await api.get(`/api/expense/getSingle/${id}`);
-  return data?.data
-}
+  return data?.data;
+};
 
-export const deleteSingleTransactions = async (id: string) => {
+const deleteSingleTransactions = async (id: string) => {
   const { data } = await api.delete(`/api/expense/delete/${id}`);
-  return data?.data
-}
+  return data?.data;
+};
 
-export const getCurrentAmount = async () => {
+const getCurrentAmount = async () => {
   const { data } = await api.get(`/api/expense/currentAmount`);
-  return data?.data
-}
+  return data?.data;
+};
+
+const getCurrentWeekAmount = async () => {
+  const { data } = await api.get(`/api/expense/currentWeekAmount`);
+  return data?.data;
+};

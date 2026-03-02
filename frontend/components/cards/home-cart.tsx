@@ -8,16 +8,16 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 
-const HomeCard = () => {
-  const chartData = [
-    { day: "Sunday", expense: 186, income: 303 },
-    { day: "Monday", expense: 305, income: 200 },
-    { day: "Thursday", expense: 237, income: 120 },
-    { day: "Wednesday", expense: 73, income: 190 },
-    { day: "Thursday", expense: 209, income: 130 },
-    { day: "Friday", expense: 214, income: 140 },
-    { day: "Saturday", expense: 214, income: 140 },
-  ];
+type TProps = {
+  day: string;
+  expense: string;
+  income: string;
+};
+
+interface IProps {
+  chartData: TProps[];
+}
+const HomeCard = ({ chartData }: IProps) => {
   const chartConfig = {
     expense: {
       label: "Expense",

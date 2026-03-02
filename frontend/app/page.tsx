@@ -5,46 +5,58 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleDollarSign, Goal, HandCoins, Search } from "lucide-react";
 import RecentTransactions from "@/components/recent-transactions";
 import { ProfileDropdown } from "@/components/profile-dropdown";
-import HomeCard from "@/components/cards/home-cart";
 import { useAuth } from "./context/AuthContext";
 import { useState } from "react";
 import TransactionModelForm from "./(auth)/transactions/_components/create-expense-model";
 import Link from "next/link";
-import { useGetCurrentAmountHook } from "./(auth)/transactions/_hooks/transactionHooks";
+import {
+  useGetCurrentAmountHook,
+  useGetCurrentWeekAmountHook,
+} from "./(auth)/transactions/_hooks/transactionHooks";
 import { rupeesConverter } from "@/lib/rupeesConverter";
 import LineLoader from "@/components/line-loader";
+import HomeCard from "@/components/cards/home-cart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const { user } = useAuth();
-
+  const { user, loading: userLoading } = useAuth();
   const [transactionModelOpen, setTransactionModelOpen] = useState(false);
-  const { data: currentAmountData, isLoading: currentAmountDataLoading } = useGetCurrentAmountHook()
+  const { data: currentAmountData, isLoading: currentAmountDataLoading } =
+    useGetCurrentAmountHook();
+  const {
+    data: currentWeekAmountData,
+    isLoading: currentWeekAmountDataLoading,
+  } = useGetCurrentWeekAmountHook();
   const [transactionType, setTransactionType] = useState<"Expense" | "Income">(
     "Expense",
   );
-
-  const handleExpense = (type: "Expense" | "Income") => {
-    setTransactionModelOpen(true);
-    setTransactionType(type);
-  };
-
   return (
     <>
       <div className="relative">
         {/* HEADER SECTION */}
         <header className="bg-[#000000] flex items-center justify-between px-5 mt-10">
-          <div className="flex items-center gap-5">
-            <Avatar className="size-10">
-              <AvatarImage src="https://github.com/maxleiter.png" />
-              <AvatarFallback>JK</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-[#7E848D] text-xs">Welcome Back Chief</p>
-              <h1 className="text-white text-lg font-semibold">
-                {user?.fullname ?? "N/A"}
-              </h1>
+          {user ? (
+            <div className="flex items-center gap-5">
+              <Avatar className="size-10">
+                <AvatarImage src="https://github.com/maxleiter.png" />
+                <AvatarFallback>JK</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-[#7E848D] text-xs">Welcome Back Chief</p>
+                <h1 className="text-white text-lg font-semibold">
+                  {user?.fullname ?? "N/A"}
+                </h1>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            </div>
+          )}
 
           {/* AMOUNT SECTION */}
           <div className="bg-[#1E1E2D] text-[#ffffff] rounded-full w-fit">
@@ -54,21 +66,33 @@ export default function Home() {
         {/* CURRENT BALANCE SECTION */}
         <div className="my-5 space-y-3">
           <h1 className="text-center text-xl text-gray-500">Current Balance</h1>
-          {
-            currentAmountDataLoading ? (
-              <LineLoader />
-            ) : (
-              <h1 className="text-center text-3xl text-gray-300">{rupeesConverter(currentAmountData?.current_amount)}</h1>
-            )
-          }
+          {currentAmountDataLoading ? (
+            <LineLoader />
+          ) : (
+            <h1 className="text-center text-3xl text-gray-300">
+              {rupeesConverter(currentAmountData?.current_amount)}
+            </h1>
+          )}
         </div>
         {/* CHART SECTION */}
         <div className="my-5">
-          <HomeCard />
+          {currentWeekAmountDataLoading ? (
+            <div className="flex items-end justify-around gap-4">
+              <Skeleton className="h-40 w-8" />
+              <Skeleton className="h-20 w-8" />
+              <Skeleton className="h-30 w-8" />
+              <Skeleton className="h-10 w-8" />
+              <Skeleton className="h-28 w-8" />
+              <Skeleton className="h-40 w-8" />
+            </div>
+          ) : (
+            <HomeCard chartData={currentWeekAmountData} />
+          )}
         </div>
         <section className="flex items-center justify-around">
           {/* EXPENSE BUTTON */}
-          <Link href="/transactions/type/expense"
+          <Link
+            href="/transactions/type/expense"
             className="group flex items-center justify-center flex-col gap-2">
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
               <HandCoins
@@ -81,7 +105,8 @@ export default function Home() {
             </span>
           </Link>
           {/* INCOME BUTTON */}
-          <Link href="/transactions/type/income"
+          <Link
+            href="/transactions/type/income"
             className="group flex items-center justify-center flex-col gap-2">
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center cursor-pointer hover:">
               <CircleDollarSign
@@ -94,7 +119,10 @@ export default function Home() {
             </span>
           </Link>
           {/* GOAL BUTTON */}
-          <button disabled title="disable" className="group flex items-center justify-center flex-col gap-2 cursor-not-allowed">
+          <button
+            disabled
+            title="disable"
+            className="group flex items-center justify-center flex-col gap-2 cursor-not-allowed">
             <div className="bg-[#1E1E2D] hover:bg-gray-900 text-white font-semibold text-xl h-13 w-13 rounded-full flex items-center justify-center hover:">
               <Goal
                 className="group-hover:text-gray-500  text-[#A2A2A7]"
