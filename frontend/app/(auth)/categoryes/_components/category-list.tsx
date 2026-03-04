@@ -31,7 +31,7 @@ const CategoryList = ({ categories }: TProps) => {
                             <ItemDescription style={{ color: category.color }} >{category.color}</ItemDescription>
                         </ItemContent>
                         <ItemActions className='cursor-pointer' >
-                            <Trash className='text-[#A2A2A7] hover:text-white ' />
+                            <Trash className='text-[#A2A2A7] hover:text-white' onClick={() => handleDelete(category?.id!)} />
                             <Edit className='text-[#A2A2A7] hover:text-white ' />
                         </ItemActions>
                         <DeleteModel

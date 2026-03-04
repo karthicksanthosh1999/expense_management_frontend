@@ -12,6 +12,7 @@ import CategoryModel from "./_components/category-model";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CategoryModelList from "./_components/category-list-model";
 import { ISOToIndianDateFormate } from "@/lib/dateFormater";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const page = () => {
   const { data } = useGetAllCategories();
@@ -23,7 +24,7 @@ const page = () => {
   useEffect(() => {
     handleFilter("week");
   }, []);
-  const { mutate, data: filteredCategoryData } = useCategoryFilterHook();
+  const { mutate, data: filteredCategoryData, isPending: filterCategoryDataIsLoading } = useCategoryFilterHook();
 
 
   const startOfDay = (d: Date) => {
@@ -88,11 +89,22 @@ const page = () => {
       </header>
 
       {/* CHART SECTION */}
-      <section>{data && (
+      <section className="h-57.5">{data && (
         <>
           {
-            alertedChartData &&
-            <ChartPieDonutText categoryChartData={alertedChartData} />
+            filterCategoryDataIsLoading ? (
+              <>
+                <div className="h-full flex items-center justify-center">
+                  <div className="relative h-32 w-32 animate-pulse">
+                    <div className="absolute inset-0 rounded-full border-18 border-[#1256bb]"></div>
+                  </div>
+                </div>
+              </>
+            ) : alertedChartData ? (
+              <ChartPieDonutText categoryChartData={alertedChartData} />
+            ) : (
+              <div>No Data</div>
+            )
           }
         </>
       )}</section>

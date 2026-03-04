@@ -7,6 +7,7 @@ type FilterParams = {
   startDate?: Date | null
   endDate?: Date | null
 }
+
 export const useGetAllCategories = () =>
   useQuery({
     queryFn: fetchCategories,
@@ -76,7 +77,14 @@ const filterApi = async ({ startDate, endDate }: FilterParams): Promise<ICartCat
   return data?.data;
 };
 
+
+
 const deleteApi = async (id: string): Promise<ICategoryTypes> => {
-  const { data } = await api.delete(`/api/category/delete`, id);
+  const { data } = await api.delete(`/api/category/delete/${id}`,);
+  return data?.data
+}
+
+const updateApi = async (category: ICategoryTypes,): Promise<ICategoryTypes> => {
+  const { data } = await api.put(`/api/category/update`, category);
   return data?.data
 }

@@ -1,3 +1,4 @@
+'use client'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -11,9 +12,8 @@ import { useForm } from "react-hook-form";
 import { FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { categoryValidationSchema } from "../_schema/categoryValidationSchema";
+import { categoryValidationSchema, TCategoryValidationSchema } from "../_schema/categoryValidationSchema";
 import { useCreateCategory } from "../_hooks/categoryHooks";
-import { ICategoryTypes } from "@/app/(types)/categoryTypes";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
@@ -44,15 +44,16 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
     }
   }, [user?.id, form]);
 
-
-  const handelCategorySubmit = (category: ICategoryTypes) => {
-    mutate(category);
-  };
-
   const handelClose = () => {
-    setOpen(false);
     form.reset()
+    setOpen(false)
   };
+
+  const handelCategorySubmit = (category: TCategoryValidationSchema) => {
+    mutate(category);
+    handelClose()
+  };
+
 
   return (
     <>
@@ -77,7 +78,13 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <Label className="text-gray-400">Title:</Label>
-                      <input placeholder="Enter Title" className="text-white border-b p-1 text-sm focus:outline-none" autoFocus {...field} type="text" />
+                      <Input
+                        placeholder="Enter Title"
+                        type="text"
+                        className="text-white border-b p-1 text-sm focus:outline-none"
+                        autoFocus
+                        {...field}
+                      />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -86,7 +93,7 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
                   name="color"
                   control={form.control}
                   render={({ field }) => (
-                    <FormItem className="flex  items-center justify-between">
+                    <FormItem className="flex flex-col items-start justify-between">
                       <Label className="text-gray-400">Select Color:</Label>
                       <Input
                         placeholder="Enter Color Code"
@@ -102,8 +109,7 @@ const CategoryModel = ({ open, setOpen }: TProps) => {
               <AlertDialogFooter className="mt-5">
                 <Button
                   type="submit"
-                  className="bg-[#0066FF] hover:bg-blue-900 cursor-pointer"
-                  onClick={handelClose}>
+                  className="bg-[#0066FF] hover:bg-blue-900 cursor-pointer">
                   Create
                 </Button>
               </AlertDialogFooter>

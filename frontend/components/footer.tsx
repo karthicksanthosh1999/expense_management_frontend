@@ -1,4 +1,4 @@
-import { ChartNoAxesColumnDecreasing, ChartPie, House, Settings } from 'lucide-react'
+import { ChartNoAxesColumnDecreasing, Goal, House, Settings } from 'lucide-react'
 import Link from 'next/link';
 
 type TProps = {
@@ -12,9 +12,9 @@ const Footer = ({ title }: TProps) => {
                 <House size={25} />
                 <span className='text-xs'>Home</span>
             </Link>
-            <Link href={'/statistics'} className={`flex items-center flex-col ${title === "Statistics" ? " text-[#0066FF]" : "text-[#8B8B94]"}`}>
-                <ChartPie size={25} />
-                <span className='text-xs'>Statistics</span>
+            <Link href={'/goal'} className={`flex items-center flex-col ${title === "Goal" ? " text-[#0066FF]" : "text-[#8B8B94]"}`}>
+                <Goal size={25} />
+                <span className='text-xs'>Goal</span>
             </Link>
             <Link href={'/categoryes'} className={`flex items-center flex-col ${title === "Category" ? " text-[#0066FF]" : "text-[#8B8B94]"}`}>
                 <ChartNoAxesColumnDecreasing size={25} />

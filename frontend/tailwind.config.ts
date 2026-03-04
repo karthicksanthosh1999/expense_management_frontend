@@ -9,6 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       keyframes: {
+        gradientMove: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
         loadingLine: {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(300%)" },
@@ -16,6 +20,7 @@ const config: Config = {
       },
       animation: {
         "loading-line": "loadingLine 1.2s ease-in-out infinite",
+        "gradient-move": "gradientMove 3s ease infinite",
       },
     },
   },
